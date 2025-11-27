@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kidney Disease Predictor</title>
+    <link rel="stylesheet" href="/static/styles/kidney_disease.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="/">Home</a>
+                <a href="/contact">Contact</a>
+                <a href="/donate">Donate ⭐</a>
+            </div>
+            <div class="nav-logo">
+                <img src="/static/images/logo.png" alt="Logo" class="company-logo">
+            </div>
+        </div>
+    </div>
+    <div class="kd-heading">
+        <h1 class="kd-title">Kidney Disease Predictor</h1>
+    </div>
+
+    <form id="kd-form" class="kd-form">
+        <div class="kd-form-grid">
+            <!-- List all user-facing (inputtable) columns -- id is typically excluded, as it's not informative -->
+            <div class="kd-field">
+                <label for="age">Age</label>
+                <input type="number" id="age" required>
+            </div>
+            <div class="kd-field">
+                <label for="bp">Blood Pressure</label>
+                <input type="number" id="bp" required>
+            </div>
+            <div class="kd-field">
+                <label for="sg">Specific Gravity</label>
+                <input type="number" step="any" id="sg" required>
+            </div>
+            <div class="kd-field">
+                <label for="al">Albumin</label>
+                <input type="number" id="al" required>
+            </div>
+            <div class="kd-field">
+                <label for="rbc">Red Blood Cells</label>
+                <select id="rbc" required>
+                    <option value="">Select</option>
+                    <option value="normal">Normal</option>
+                    <option value="abnormal">Abnormal</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="pc">Pus Cell</label>
+                <select id="pc" required>
+                    <option value="">Select</option>
+                    <option value="normal">Normal</option>
+                    <option value="abnormal">Abnormal</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="pcc">Pus Cell Clumps</label>
+                <select id="pcc" required>
+                    <option value="">Select</option>
+                    <option value="present">Present</option>
+                    <option value="notpresent">Not Present</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="htn">Hypertension</label>
+                <select id="htn" required>
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="dm">Diabetes Mellitus</label>
+                <select id="dm" required>
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="cad">Coronary Artery Disease</label>
+                <select id="cad" required>
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="appet">Appetite</label>
+                <select id="appet" required>
+                    <option value="">Select</option>
+                    <option value="good">Good</option>
+                    <option value="poor">Poor</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="pe">Pedal Edema</label>
+                <select id="pe" required>
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="kd-field">
+                <label for="ane">Anemia</label>
+                <select id="ane" required>
+                    <option value="">Select</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <!-- Add remaining inputtable numeric columns as needed, e.g. bgr, bu, sc, hemo, pcv, wc, etc -->
+            <div class="kd-field">
+                <label for="bgr">Blood Glucose Random</label>
+                <input type="number" id="bgr" required>
+            </div>
+            <div class="kd-field">
+                <label for="bu">Blood Urea</label>
+                <input type="number" id="bu" required>
+            </div>
+            <div class="kd-field">
+                <label for="sc">Serum Creatinine</label>
+                <input type="number" step="any" id="sc" required>
+            </div>
+            <div class="kd-field">
+                <label for="hemo">Hemoglobin</label>
+                <input type="number" step="any" id="hemo" required>
+            </div>
+            <div class="kd-field">
+                <label for="pcv">Packed Cell Volume</label>
+                <input type="number" id="pcv" required>
+            </div>
+            <div class="kd-field">
+                <label for="wc">White Blood Cell Count</label>
+                <input type="number" id="wc" required>
+            </div>
+            <div class="kd-field">
+                <label for="rc">Red Blood Cell Count</label>
+                <input type="number" step="any" id="rc" required>
+            </div>
+        </div>
+        <button type="submit" class="kd-predict-btn">Predict</button>
+    </form>
+
+    <!-- Loading overlay -->
+    <div id="kd-loading" class="kd-loading-overlay">
+        <div class="kd-loading-popup">
+            <div class="kd-spinner"></div>
+            <span>Predicting, please wait...</span>
+        </div>
+    </div>
+    <!-- Result slide-down -->
+    <div id="kd-result" class="kd-result-slide" style="display:none;">
+        <h2 class="kd-result-title">Prediction Result</h2>
+        <p id="kd-result-text"></p>
+        <div class="kd-result-info">
+            <h3>Kidney Disease Info</h3>
+            <ul>
+                <li><strong>Common Symptoms:</strong> Swelling, urine changes, fatigue, loss of appetite, nausea.</li>
+                <li><strong>Risk Factors:</strong> Hypertension, diabetes, infection, genetic factors, drug use.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+    <script>
+    // JS logic for loader/result and form submission
+    function showLoader() {
+        document.getElementById('kd-loading').style.display = 'flex';
+    }
+    function hideLoader() {
+        document.getElementById('kd-loading').style.display = 'none';
+    }
+    function showResult(text) {
+        hideLoader();
+        var result = document.getElementById('kd-result');
+        document.getElementById('kd-result-text').textContent = text;
+        result.style.display = 'block';
+        result.scrollIntoView({behavior: "smooth"});
+    }
+    document.getElementById('kd-form').onsubmit = function(e) {
+        e.preventDefault();
+        showLoader();
+        // Collect all form features as a dict, matching backend
+        let features = {
+            age: parseFloat(document.getElementById('age').value),
+            bp: parseFloat(document.getElementById('bp').value),
+            sg: parseFloat(document.getElementById('sg').value),
+            al: parseFloat(document.getElementById('al').value),
+            rbc: document.getElementById('rbc').value,
+            pc: document.getElementById('pc').value,
+            pcc: document.getElementById('pcc').value,
+            htn: document.getElementById('htn').value,
+            dm: document.getElementById('dm').value,
+            cad: document.getElementById('cad').value,
+            appet: document.getElementById('appet').value,
+            pe: document.getElementById('pe').value,
+            ane: document.getElementById('ane').value,
+            bgr: parseFloat(document.getElementById('bgr').value),
+            bu: parseFloat(document.getElementById('bu').value),
+            sc: parseFloat(document.getElementById('sc').value),
+            hemo: parseFloat(document.getElementById('hemo').value),
+            pcv: parseFloat(document.getElementById('pcv').value),
+            wc: parseFloat(document.getElementById('wc').value),
+            rc: parseFloat(document.getElementById('rc').value)
+        };
+        fetch('/predict/kidney', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({features: features})
+        })
+        .then(res => res.json())
+        .then(data => showResult(data.prediction))
+        .catch(err => {
+            hideLoader();
+            alert("Prediction failed: "+err);
+        });
+    };
+    </script>
+</body>
+</html>

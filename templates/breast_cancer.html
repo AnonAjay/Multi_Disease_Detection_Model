@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breast Cancer Report Predictor</title>
+    <link rel="stylesheet" href="/static/styles/breast_cancer.css">
+</head>
+<body>
+    <!-- Nav as before -->
+    <div class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="/">Home</a>
+                <a href="/contact">Contact</a>
+                <a href="/donate">Donate ⭐</a>
+            </div>
+            <div class="nav-logo">
+                <img src="/static/images/logo.png" alt="LiveGuard Logo" class="company-logo">
+            </div>
+        </div>
+    </div>
+    <div class="bt-heading">
+        <h1 class="bt-title">Breast Cancer Report Predictor</h1>
+    </div>
+    <!-- Main Content: Instructions + Upload side-by-side -->
+    <div class="main-cols">
+        <!-- Left: Instructions -->
+        <div class="instructions-card">
+            <h2>Instructions</h2>
+            <ul>
+                <li>Upload a valid <span class="highlight">CSV</span> or <span class="highlight">JSON</span> file containing patient features.</li>
+                <li><span class="highlight">CSV:</span> One row per prediction, columns in EXACT model order. No header required.</li>
+                <li><span class="highlight">JSON:</span> Format as <code>{"features": [...]}</code> for single patient.</li>
+                <li>See download sample or template below for reference.</li>
+                <li>No image upload needed for this model.</li>
+            </ul>
+            <p class="tip">Your uploaded file is processed instantly. Data is not stored after prediction.</p>
+            <a href="/static/sample_breast_cancer.csv" class="sample-link" download>Download Sample CSV</a>
+        </div>
+        <!-- Right: Upload -->
+        <div class="upload-card">
+            <h2>Upload Your Report File</h2>
+            <input type="file" id="data-upload" accept=".json,.csv">
+            <button id="upload-btn" class="bc-predict-btn" type="button">Upload & Predict</button>
+        </div>
+    </div>
+    <!-- Loading overlay (fullscreen, translucent) -->
+    <div id="bc-loading" class="bc-loading-overlay">
+        <div class="loading-popup">
+            <div class="bc-spinner"></div>
+            <span>Predicting, please wait...</span>
+        </div>
+    </div>
+    <!-- Result section will slide down -->
+    <div id="bc-result" class="result-slide" style="display:none;">
+        <h2 class="result-title">Prediction Result</h2>
+        <p id="bc-result-text"></p>
+        <div class="result-info">
+            <h3>Types of Breast Cancer</h3>
+            <ul>
+                <li><strong>Malignant:</strong> Cancerous growth indicated. Consult your doctor immediately for next steps and diagnosis.</li>
+                <li><strong>Benign:</strong> Non-cancerous result. Regular checkups are still advised.</li>
+            </ul>
+            <h3>Why does breast cancer occur?</h3>
+            <p>
+                Genetics, age, hormones, and lifestyle choices can increase risk. Early detection and screening significantly improve outcomes.
+            </p>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+    <script>
+    // Loader and slide-in logic
+    function showLoader() {
+        document.getElementById('bc-loading').style.display = 'flex';
+    }
+    function hideLoader() {
+        document.getElementById('bc-loading').style.display = 'none';
+    }
+    function showResult(text) {
+        hideLoader();
+        var result = document.getElementById('bc-result');
+        document.getElementById('bc-result-text').textContent = text;
+        result.style.display = 'block';
+        result.scrollIntoView({behavior: "smooth"});
+    }
+    document.getElementById('upload-btn').onclick = function() {
+        const fileInput = document.getElementById('data-upload');
+        const file = fileInput.files[0];
+        if (!file) { alert("Please select a file."); return; }
+        showLoader();
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let features = null;
+            if (file.name.endsWith('.json')) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    features = data.features;
+                } catch (err) {
+                    alert("Error parsing JSON: "+err);
+                    hideLoader();
+                    return;
+                }
+            } else if (file.name.endsWith('.csv')) {
+                // CSV: one row, comma-separated features
+                const row = e.target.result.split('\n')[0];
+                features = row.split(',').map(Number);
+            } else {
+                alert("Unsupported file type. Only .json or .csv allowed.");
+                hideLoader();
+                return;
+            }
+            fetch('/predict/breast_cancer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({features: features})
+            }).then(res => res.json())
+            .then(data => showResult(data.prediction))
+            .catch(err => {
+                hideLoader();
+                alert("Prediction failed: "+err);
+            });
+        };
+        reader.readAsText(file);
+    };
+    </script>
+</body>
+</html>

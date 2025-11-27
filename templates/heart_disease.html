@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Heart Disease Predictor</title>
+    <link rel="stylesheet" href="/static/styles/heart_disease.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="/">Home</a>
+                <a href="/contact">Contact</a>
+                <a href="/donate">Donate ⭐</a>
+            </div>
+            <div class="nav-logo">
+                <img src="/static/images/logo.png" alt="Logo" class="company-logo">
+            </div>
+        </div>
+    </div>
+    <div class="hd-heading">
+        <h1 class="hd-title">Heart Disease Predictor</h1>
+    </div>
+
+    <form id="hd-form" class="hd-form">
+        <div class="hd-form-grid">
+            <div class="hd-field">
+                <label for="Age">Age</label>
+                <input type="number" id="Age" required>
+            </div>
+            <div class="hd-field">
+                <label for="Sex">Sex</label>
+                <select id="Sex" required>
+                    <option value="">Select</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+            <div class="hd-field">
+                <label for="ChestPainType">Chest Pain Type</label>
+                <select id="ChestPainType" required>
+                    <option value="">Select</option>
+                    <option value="TA">Typical Angina</option>
+                    <option value="ATA">Atypical Angina</option>
+                    <option value="NAP">Non-Anginal Pain</option>
+                    <option value="ASY">Asymptomatic</option>
+                </select>
+            </div>
+            <div class="hd-field">
+                <label for="RestingBP">Resting BP</label>
+                <input type="number" id="RestingBP" required>
+            </div>
+            <div class="hd-field">
+                <label for="Cholesterol">Cholesterol</label>
+                <input type="number" id="Cholesterol" required>
+            </div>
+            <div class="hd-field">
+                <label for="FastingBS">Fasting Blood Sugar</label>
+                <select id="FastingBS" required>
+                    <option value="">Select</option>
+                    <option value="0">≤ 120 mg/dl</option>
+                    <option value="1">&gt; 120 mg/dl</option>
+                </select>
+            </div>
+            <div class="hd-field">
+                <label for="RestingECG">Resting ECG</label>
+                <select id="RestingECG" required>
+                    <option value="">Select</option>
+                    <option value="Normal">Normal</option>
+                    <option value="ST">ST-T abnormality</option>
+                    <option value="LVH">LV hypertrophy</option>
+                </select>
+            </div>
+            <div class="hd-field">
+                <label for="MaxHR">Max Heart Rate</label>
+                <input type="number" id="MaxHR" required>
+            </div>
+            <div class="hd-field">
+                <label for="ExerciseAngina">Exercise Induced Angina</label>
+                <select id="ExerciseAngina" required>
+                    <option value="">Select</option>
+                    <option value="Y">Yes</option>
+                    <option value="N">No</option>
+                </select>
+            </div>
+            <div class="hd-field">
+                <label for="Oldpeak">Oldpeak</label>
+                <input type="number" step="any" id="Oldpeak" required>
+            </div>
+            <div class="hd-field">
+                <label for="ST_Slope">ST Slope</label>
+                <select id="ST_Slope" required>
+                    <option value="">Select</option>
+                    <option value="Up">Up</option>
+                    <option value="Flat">Flat</option>
+                    <option value="Down">Down</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="hd-predict-btn">Predict</button>
+    </form>
+
+    <!-- Full page loading overlay -->
+    <div id="hd-loading" class="hd-loading-overlay">
+        <div class="hd-loading-popup">
+            <div class="hd-spinner"></div>
+            <span>Predicting, please wait...</span>
+        </div>
+    </div>
+    <!-- Result slide-down -->
+    <div id="hd-result" class="hd-result-slide" style="display:none;">
+        <h2 class="hd-result-title">Prediction Result</h2>
+        <p id="hd-result-text"></p>
+        <div class="hd-result-info">
+            <h3>About Heart Disease</h3>
+            <ul>
+                <li><strong>Risk Factors:</strong> Age, high cholesterol, high BP, diabetes, family history, smoking.
+                </li>
+                <li><strong>Symptoms:</strong> Chest pain, shortness of breath, fatigue, abnormal ECG. Early detection
+                    saves lives.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+    <script>
+        // Loader and slide-in logic, form submission AJAX to backend
+        function showLoader() {
+            document.getElementById('hd-loading').style.display = 'flex';
+        }
+        function hideLoader() {
+            document.getElementById('hd-loading').style.display = 'none';
+        }
+        function showResult(text) {
+            hideLoader();
+            var result = document.getElementById('hd-result');
+            document.getElementById('hd-result-text').textContent = text;
+            result.style.display = 'block';
+            result.scrollIntoView({ behavior: "smooth" });
+        }
+        document.getElementById('hd-form').onsubmit = function (e) {
+            e.preventDefault();
+            showLoader();
+            // Collect all form features as an object
+            let features = {
+                Age: parseFloat(document.getElementById('Age').value),
+                Sex: document.getElementById('Sex').value,
+                ChestPainType: document.getElementById('ChestPainType').value,
+                RestingBP: parseFloat(document.getElementById('RestingBP').value),
+                Cholesterol: parseFloat(document.getElementById('Cholesterol').value),
+                FastingBS: document.getElementById('FastingBS').value,
+                RestingECG: document.getElementById('RestingECG').value,
+                MaxHR: parseFloat(document.getElementById('MaxHR').value),
+                ExerciseAngina: document.getElementById('ExerciseAngina').value,
+                Oldpeak: parseFloat(document.getElementById('Oldpeak').value),
+                ST_Slope: document.getElementById('ST_Slope').value
+            };
+            fetch('/predict/heart', {   // use correct route!
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ features: features })
+            })
+                .then(res => res.json())
+                .then(data => showResult(data.prediction))
+                .catch(err => {
+                    hideLoader();
+                    alert("Prediction failed: " + err);
+                });
+        };
+
+    </script>
+</body>
+
+</html>

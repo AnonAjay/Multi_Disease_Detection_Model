@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveGuard Disease Detection</title>
+    <link rel="stylesheet" href="/static/styles/styles.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/contact">Contact</a>
+            <a href="/donate">Donate ⭐</a>
+        </div>
+        <div class="nav-logo">
+            <img src="/static/images/logo.png" alt="LiveGuard Logo" class="company-logo">
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+        <div class="model-grid">
+            <div class="model-item" onclick="window.location.href='/predict/brain_tumor'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/brain_tumor.png');">
+                    <div class="model-title blue">BRAIN TUMOR DETECTION</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/breast_tumor'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/breast_cancer.png');">
+                    <div class="model-title green">BREAST CANCER DETECTION - IMAGE BASED</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/breast_cancer'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/breast_tumor.png');">
+                    <div class="model-title blue">BREAST CANCER DETECTION - REPORT BASED</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/gastro'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/intestinal_disease.png');">
+                    <div class="model-title green">GASTROINTESTINAL DISEASE</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/lung_cancer'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/lung_disease.png');">
+                    <div class="model-title blue">LUNG CANCER DETECTION</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/pneumonia'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/pneumonia.png');">
+                    <div class="model-title green">PNEUMONIA DETECTION</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/heart'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/heart_disease.png');">
+                    <div class="model-title blue">HEART DISEASE DETECTION</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/kidney'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/kidney_disease.png');">
+                    <div class="model-title green">KIDNEY DISEASE DETECTION</div>
+                </div>
+            </div>
+            <div class="model-item" onclick="window.location.href='/predict/diabetes'">
+                <div class="model-bg" style="background-image: url('/static/images/web_images/diabetes.png');">
+                    <div class="model-title blue">DIABETES DETECTION</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+</body>
+</html>

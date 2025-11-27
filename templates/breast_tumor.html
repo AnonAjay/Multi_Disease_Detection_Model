@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breast Tumor Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/breast_tumor.css') }}">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/contact">Contact</a>
+            <a href="/donate">Donate ⭐</a>
+        </div>
+        <div class="nav-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="LiveGuard Logo" class="company-logo">
+        </div>
+    </div>
+
+    <div class="bt-heading">
+        <h1 class="bt-title">BREAST TUMOR DETECTOR</h1>
+    </div>
+
+    <div class="bt-flex-row">
+        <div class="bt-instructions-box">
+            <p><strong>Instructions:</strong></p>
+            <ul>
+                <li>Upload a clear, well-lit <span class="bt-highlight">JPG</span> or <span class="bt-highlight">PNG</span> breast <span class="bt-blue">MRI</span> or <span class="bt-blue">histopathology</span> image.</li>
+                <li>Only <span class="bt-highlight">JPG</span> or <span class="bt-highlight">PNG</span> images are supported.</li>
+                <li>For best results, the image should clearly show the tissue area to be analyzed.</li>
+            </ul>
+            <span class="bt-explain">Your uploaded image is only used for prediction and not stored.</span>
+        </div>
+        <div class="bt-upload-box" id="bt-upload-box">
+            <input type="file" id="bt-img-input" accept=".jpg,.jpeg,.png" hidden>
+            <div id="bt-upload-area" class="bt-upload-area" onclick="document.getElementById('bt-img-input').click();">
+                <span id="bt-upload-text" class="bt-upload-text">Click or Drag Breast MRI Image (JPG or PNG)</span>
+            </div>
+            <button class="bt-upload-btn" type="button" id="bt-upload-btn" disabled>Upload & Predict</button>
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="bt-loading" class="bt-loading" style="display: none;">
+        <div class="bt-spinner"></div>
+        <span>Detecting anomaly, please wait...</span>
+    </div>
+
+    <!-- Result Box -->
+    <div id="bt-result" class="bt-result" style="display: none;">
+        <h2>Your Result</h2>
+        <p id="bt-result-text" class="bt-result-pred"></p>
+        <div class="bt-breast-info">
+            <h3>Understanding Breast Cancer</h3>
+            <ul>
+                <li><strong>Tumor found:</strong> This suggests abnormal cells or masses are present. Consult a healthcare professional for confirmation and treatment planning.</li>
+                <li><strong>No tumor found:</strong> No abnormal signs detected. However, regular screenings are important for early detection.</li>
+            </ul>
+            <div class="bt-desc">
+                <strong>What is breast cancer?</strong><br>
+                Breast cancer occurs when cells in the breast tissue grow uncontrollably to form tumors, often detectable on scans or medical images.  
+                <br><br>
+                <strong>Why does it happen so often?</strong><br>
+                Multiple factors contribute: genetics, hormonal changes, age, lifestyle, and environmental factors. It is especially common in women but can affect men too, making regular checkups and awareness key to prevention and early treatment.
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+
+    <script>
+        const imgInput = document.getElementById('bt-img-input');
+        const uploadArea = document.getElementById('bt-upload-area');
+        const uploadText = document.getElementById('bt-upload-text');
+        const uploadBtn = document.getElementById('bt-upload-btn');
+        let fileToSend = null;
+        const uploadBox = document.getElementById('bt-upload-box');
+
+        imgInput.onchange = function(e) {
+            const [file] = e.target.files;
+            if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    uploadBox.innerHTML = `
+                        <img id="bt-preview" class="bt-preview" src="${evt.target.result}" alt="Preview">
+                        <button class="bt-upload-btn" type="button" id="bt-upload-btn">Upload & Predict</button>
+                    `;
+                    document.getElementById('bt-upload-btn').onclick = uploadBtn.onclick;
+                };
+                reader.readAsDataURL(file);
+                fileToSend = file;
+            } else {
+                uploadText.textContent = "Only JPG or PNG images allowed.";
+                uploadBtn.disabled = true;
+                fileToSend = null;
+            }
+        };
+
+        uploadBtn.onclick = function() {
+            if (!fileToSend) return;
+            uploadBtn.disabled = true;
+            document.getElementById('bt-loading').style.display = 'flex';
+            document.getElementById('bt-result').style.display = 'none';
+            const formData = new FormData();
+            formData.append('file', fileToSend);
+            fetch('/predict/breast_tumor', {
+                method: 'POST',
+                body: formData,
+            }).then(res => res.json())
+              .then(data => {
+                document.getElementById('bt-loading').style.display = 'none';
+                document.getElementById('bt-result').style.display = 'block';
+                document.getElementById('bt-result-text').textContent = data.prediction;
+                uploadBtn.disabled = false;
+              }).catch(err => {
+                document.getElementById('bt-loading').style.display = 'none';
+                uploadBtn.disabled = false;
+                alert("Something went wrong: " + err);
+              });
+        };
+    </script>
+</body>
+</html>

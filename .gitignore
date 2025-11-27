@@ -1,0 +1,25 @@
+# Python / general
+__pycache__/
+*.pyc
+.env
+.venv/
+env/
+
+# Data & datasets
+data/
+datasets/
+*.csv
+*.xlsx
+
+# Trained models / large artifacts
+models/
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.pkl
+*.ckpt
+
+# OS / editor junk
+.DS_Store
+Thumbs.db

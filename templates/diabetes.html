@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diabetes Predictor</title>
+    <link rel="stylesheet" href="/static/styles/diabetes.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="/">Home</a>
+                <a href="/contact">Contact</a>
+                <a href="/donate">Donate ⭐</a>
+            </div>
+            <div class="nav-logo">
+                <img src="/static/images/logo.png" alt="Logo" class="company-logo">
+            </div>
+        </div>
+    </div>
+    <div class="dia-heading">
+        <h1 class="dia-title">Diabetes Predictor</h1>
+    </div>
+
+    <form id="dia-form" class="dia-form">
+        <div class="dia-form-grid">
+            <div class="dia-field">
+                <label for="Pregnancies">Pregnancies</label>
+                <input type="number" id="Pregnancies" required>
+            </div>
+            <div class="dia-field">
+                <label for="Glucose">Glucose</label>
+                <input type="number" id="Glucose" required>
+            </div>
+            <div class="dia-field">
+                <label for="BloodPressure">Blood Pressure</label>
+                <input type="number" id="BloodPressure" required>
+            </div>
+            <div class="dia-field">
+                <label for="SkinThickness">Skin Thickness</label>
+                <input type="number" id="SkinThickness" required>
+            </div>
+            <div class="dia-field">
+                <label for="Insulin">Insulin</label>
+                <input type="number" id="Insulin" required>
+            </div>
+            <div class="dia-field">
+                <label for="BMI">BMI</label>
+                <input type="number" step="any" id="BMI" required>
+            </div>
+            <div class="dia-field">
+                <label for="DiabetesPedigreeFunction">Diabetes Pedigree Function</label>
+                <input type="number" step="any" id="DiabetesPedigreeFunction" required>
+            </div>
+            <div class="dia-field">
+                <label for="Age">Age</label>
+                <input type="number" id="Age" required>
+            </div>
+        </div>
+        <button type="submit" class="dia-predict-btn">Predict</button>
+    </form>
+
+    <!-- Loading overlay -->
+    <div id="dia-loading" class="dia-loading-overlay">
+        <div class="dia-loading-popup">
+            <div class="dia-spinner"></div>
+            <span>Predicting, please wait...</span>
+        </div>
+    </div>
+    <!-- Result slide-down -->
+    <div id="dia-result" class="dia-result-slide" style="display:none;">
+        <h2 class="dia-result-title">Prediction Result</h2>
+        <p id="dia-result-text"></p>
+        <div class="dia-result-info">
+            <h3>About Diabetes</h3>
+            <ul>
+                <li><strong>Symptoms:</strong> Increased thirst/hunger, frequent urination, fatigue, blurred vision.</li>
+                <li><strong>Risk Factors:</strong> Obesity, hypertension, age, genetics, sedentary lifestyle.</li>
+            </ul>
+            <p>Early detection and management are critical for positive outcomes.</p>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+    <script>
+    function showLoader() {
+        document.getElementById('dia-loading').style.display = 'flex';
+    }
+    function hideLoader() {
+        document.getElementById('dia-loading').style.display = 'none';
+    }
+    function showResult(text) {
+        hideLoader();
+        var result = document.getElementById('dia-result');
+        document.getElementById('dia-result-text').textContent = text;
+        result.style.display = 'block';
+        result.scrollIntoView({behavior: "smooth"});
+    }
+    document.getElementById('dia-form').onsubmit = function(e) {
+        e.preventDefault();
+        showLoader();
+        // Collect all form features as a dict, matching backend
+        let features = {
+            Pregnancies: parseFloat(document.getElementById('Pregnancies').value),
+            Glucose: parseFloat(document.getElementById('Glucose').value),
+            BloodPressure: parseFloat(document.getElementById('BloodPressure').value),
+            SkinThickness: parseFloat(document.getElementById('SkinThickness').value),
+            Insulin: parseFloat(document.getElementById('Insulin').value),
+            BMI: parseFloat(document.getElementById('BMI').value),
+            DiabetesPedigreeFunction: parseFloat(document.getElementById('DiabetesPedigreeFunction').value),
+            Age: parseFloat(document.getElementById('Age').value),
+        };
+        fetch('/predict/diabetes', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({features: features})
+        })
+        .then(res => res.json())
+        .then(data => showResult(data.prediction))
+        .catch(err => {
+            hideLoader();
+            alert("Prediction failed: "+err);
+        });
+    };
+    </script>
+</body>
+</html>

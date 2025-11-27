@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gastrointestinal Disease Detector</title>
+    <link rel="stylesheet" href="/static/styles/styles.css">
+    <link rel="stylesheet" href="/static/styles/gastro_disease.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/contact">Contact</a>
+            <a href="/donate">Donate ⭐</a>
+        </div>
+        <div class="nav-logo">
+            <img src="/static/images/logo.png" alt="LiveGuard Logo" class="company-logo">
+        </div>
+    </div>
+
+    <div class="bt-heading">
+        <h1 class="bt-title">GASTROINTESTINAL DISEASE DETECTOR</h1>
+    </div>
+
+    <div class="bt-flex-row">
+        <div class="bt-instructions-box">
+            <p><strong>Instructions:</strong></p>
+            <ul>
+                <li>Upload a <span class="bt-highlight">JPG</span> or <span class="bt-highlight">PNG</span> image from an endoscopy or colonoscopy.</li>
+                <li>Image must be <span class="bt-blue">clear and properly oriented</span>.</li>
+                <li>Files supported: <span class="bt-highlight">JPG, PNG</span></li>
+                <li>Optimal prediction requires images showing tissue and color details.</li>
+            </ul>
+            <span class="bt-explain">Uploaded images are not stored and are used only for prediction.</span>
+        </div>
+        <div class="bt-upload-box" id="bt-upload-box">
+            <input type="file" id="bt-img-input" accept=".jpg,.jpeg,.png" hidden>
+            <div id="bt-upload-area" class="bt-upload-area" onclick="document.getElementById('bt-img-input').click();">
+                <span id="bt-upload-text" class="bt-upload-text">Click or Drag Gastro Image (JPG/PNG)</span>
+            </div>
+            <button class="bt-upload-btn" type="button" id="bt-upload-btn" disabled>Upload & Predict</button>
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="bt-loading" class="bt-loading" style="display: none;">
+        <div class="bt-spinner"></div>
+        <span>Detecting anomaly, please wait...</span>
+    </div>
+
+    <!-- Result Box -->
+    <div id="bt-result" class="bt-result" style="display: none;">
+        <h2>Your Result</h2>
+        <p id="bt-result-text" class="bt-result-pred"></p>
+        <div class="bt-gastro-info">
+            <h3>Gastrointestinal Conditions Detected</h3>
+            <ul>
+                <li><strong>Polyps/Dyed Lifted Polyps:</strong> Small clumps of cells that form on the lining of the colon and can progress to cancer if untreated.</li>
+                <li><strong>Dyed Resection Margins:</strong> Marking margins post-polyp removal for clear identification.</li>
+                <li><strong>Esophagitis:</strong> Inflammation or irritation of the esophagus, often due to acid reflux.</li>
+                <li><strong>Normal Cecum/Pylorus/Z-Line:</strong> Indicates healthy findings in key gastrointestinal areas.</li>
+                <li><strong>Ulcerative Colitis:</strong> Chronic inflammatory bowel disease causing sores/ulcers in the colon lining.</li>
+            </ul>
+            <div class="bt-desc">
+                <strong>About gastro diseases:</strong><br>
+                Gastrointestinal diseases can range from benign inflammation (esophagitis) to chronic conditions (ulcerative colitis), and potentially pre-cancerous findings like polyps.  
+                <br><br>
+                <strong>Why is early detection important?</strong><br>
+                Many GI conditions can be improved or cured with early intervention. Polyp removal reduces colon cancer risk, and timely treatment of colitis or esophagitis enhances patient quality of life.
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 LIVEGUARD — a company by <span class="footer-author">Ajay Preet Singh</span>
+    </div>
+
+    <script>
+        const imgInput = document.getElementById('bt-img-input');
+        const uploadArea = document.getElementById('bt-upload-area');
+        const uploadText = document.getElementById('bt-upload-text');
+        const uploadBtn = document.getElementById('bt-upload-btn');
+        let fileToSend = null;
+        const uploadBox = document.getElementById('bt-upload-box');
+
+        imgInput.onchange = function(e) {
+            const [file] = e.target.files;
+            if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    uploadBox.innerHTML = `
+                        <img id="bt-preview" class="bt-preview" src="${evt.target.result}" alt="Preview">
+                        <button class="bt-upload-btn" type="button" id="bt-upload-btn">Upload & Predict</button>
+                    `;
+                    document.getElementById('bt-upload-btn').onclick = uploadBtn.onclick;
+                };
+                reader.readAsDataURL(file);
+                fileToSend = file;
+            } else {
+                uploadText.textContent = "Only JPG or PNG images allowed.";
+                uploadBtn.disabled = true;
+                fileToSend = null;
+            }
+        };
+
+        uploadBtn.onclick = function() {
+            if (!fileToSend) return;
+            uploadBtn.disabled = true;
+            document.getElementById('bt-loading').style.display = 'flex';
+            document.getElementById('bt-result').style.display = 'none';
+            const formData = new FormData();
+            formData.append('file', fileToSend);
+            fetch('/predict/gastro', {
+                method: 'POST',
+                body: formData,
+            }).then(res => res.json())
+              .then(data => {
+                document.getElementById('bt-loading').style.display = 'none';
+                document.getElementById('bt-result').style.display = 'block';
+                document.getElementById('bt-result-text').textContent = data.prediction;
+                uploadBtn.disabled = false;
+              }).catch(err => {
+                document.getElementById('bt-loading').style.display = 'none';
+                uploadBtn.disabled = false;
+                alert("Something went wrong: " + err);
+              });
+        };
+    </script>
+</body>
+</html>
