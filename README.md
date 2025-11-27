@@ -1,123 +1,89 @@
-<<<<<<< HEAD
-🩺 LiveGuard Disease Classifier WebApp
-Modern web application for rapid disease classification—including Breast Cancer, Heart Disease, Kidney Disease, and Diabetes. Designed for easy use, fast inference, and robust deployment.
+# 🩺 Multi Disease Detection Model (LiveGuard)
 
-Features
-Fast tabular disease prediction for multiple conditions
+Multi_Disease_Detection_Model (LiveGuard) is a Flask-based multi-disease detection web app that combines multiple ML and CNN models trained on Kaggle datasets to analyze both medical images and tabular clinical data. The app provides unified predictions for conditions such as breast cancer, heart disease, kidney disease, diabetes, and more via image upload and form/CSV/JSON inputs. [web:36][web:225]
 
-Breast Cancer: Upload CSV/JSON or fill fields
+---
 
-Heart Disease: Simple feature form
+## Features
 
-Kidney Disease: Optimized, multi-field feature form
+- Fast tabular disease prediction for multiple conditions (breast cancer, heart disease, kidney disease, diabetes, etc.).
+- Image-based prediction for supported diseases using CNN models.
+- Multiple input modes:
+  - CSV / JSON upload.
+  - Direct HTML forms.
+  - Image upload (X-ray / scan, depending on model).
+- Optimized ML pipelines with preprocessing (scaling, encoding, feature engineering) baked into each model.
+- Responsive web UI with dark mode, loading overlays, and animated result sections.
+- AJAX-powered forms for smooth, interactive prediction without full-page reloads. [web:220][web:221]
 
-Diabetes: Numeric form for instant risk assessment
+---
 
-Optimized ML pipelines—feature engineering, scaling, and encoding included for robust predictions
+## Tech Stack
 
-Responsive web UI—dark mode, loading overlays, animated results
+- **Backend**: Python 3.x, Flask, scikit-learn, Keras/TensorFlow.
+- **Frontend**: HTML, CSS, vanilla JavaScript.
+- **Models**:
+  - Tabular: Logistic Regression, Ridge Classifier, and other sklearn models wrapped in pipelines.
+  - Imaging: CNN models saved as `.h5` (for supported diseases).
+- **Deployment**: Local Flask server (`app.py`), easily extendable to cloud / VPS / Docker. [web:220][web:222]
 
-AJAX-powered forms for fast, interactive prediction
+---
 
-Technologies
-Backend: Python 3.x + Flask + scikit-learn
+## Setup
 
-Frontend: HTML/CSS/JS (vanilla, no framework)
+### 1. Clone the repository
 
-Models: Logistic Regression, Ridge Classifier; full preprocessing inside pipelines
+### 2. Create environment & install dependencies
 
-Deployment: Local Flask server (app.py), easy to upgrade for cloud/VPS hosting
+Using Conda:
+    conda env create -f environment.yml (will provide later working on some other project)
+    conda activate allpurpose
 
-Setup
-Clone this repository:
+Or using pip:
+    pip install -r requirements.txt (will provide later as well)
 
-text
-git clone https://github.com/yourusername/liveguard-disease-classifier.git
-cd liveguard-disease-classifier
-Install dependencies:
 
-text
-conda env create -f environment.yml
-conda activate allpurpose
-or
+### 3. Models
 
-text
-pip install -r requirements.txt
-Train or download models:
+- Use pre-trained `.pkl` / `.h5` models in `/trained_models`, or
+- Retrain using scripts in `/model_scripts` (if provided), for example:
 
-You can retrain using the provided Python scripts in /model_scripts, or use pre-trained .pkl files in /trained_models.
 
-Example:
+> Large datasets are **not** included in this repo; please download them from their original Kaggle sources and update paths in the training scripts accordingly. [web:93][web:102]
 
-text
-# To retrain:
-python model_scripts/train_breast_cancer.py
-python model_scripts/train_heart_disease.py
-python model_scripts/train_kidney_disease.py
-python model_scripts/train_diabetes.py
-Run the server:
+### 4. Run the server
 
-text
-python app.py
-This will start the Flask server at http://localhost:5000
 
-Usage
-Web Page:
-Go to http://localhost:5000 and select the tabular predictor you wish to use.
+The app will start at: `http://localhost:5000`
 
-Uploading:
+---
 
-Tabular predictors support CSV/JSON uploads and direct form entry.
+## Usage
 
-Example: Upload heart_disease_sample.csv or enter features in the form.
+- Open `http://localhost:5000` in your browser.
+- Choose the required predictor (e.g., Breast Cancer, Heart Disease, Kidney Disease, Diabetes, etc.).
+- Provide inputs:
+  - Upload CSV/JSON for batch prediction, or
+  - Fill the form for single-patient prediction, or
+  - Upload an image (for supported imaging models).
+- Submit and view the predicted risk/label along with a clean UI response. [web:220][web:225]
 
-Results:
-Fast prediction with animated loading and slide-down diagnosis, including explanations and disease information.
+---
 
-Backend API:
-Endpoints accept POST with JSON body { "features": { ... }}; see /app.py for formats and documentation.
 
-Directory Structure
-text
-/static/
-    /styles/      # CSS files
-    /images/      # Logos and UI images
-/templates/
-    breast_cancer.html
-    heart_disease.html
-    kidney_disease.html
-    diabetes.html
-/model_scripts/
-    train_breast_cancer.py
-    train_heart_disease.py
-    train_kidney_disease.py
-    train_diabetes.py
-/trained_models/
-    breast_cancer_pipeline.pkl
-    heart_logreg_pipeline.pkl
-    kidney_logreg_pipeline.pkl
-    ridge_classifier_diabetes_pipeline.pkl
-app.py
-README.md
-requirements.txt
-environment.yml
-Sample Data
-Check /data/ for sample CSV input files and templates.
+---
 
-Column order and input format must match those provided in forms and scripts.
+## Extending the App
 
-Customization & Extending
-Add more diseases or predictors by duplicating a template and training script.
+- Add a new disease:
+  - Create a training script in `/model_scripts`.
+  - Save the trained model in `/trained_models`.
+  - Add a new HTML template and route in `app.py`.
+- Because preprocessing is encapsulated in pipelines, adding new tabular models usually requires minimal backend changes. [web:220][web:221]
 
-Pipelines handle feature engineering and encoding—no extra backend code needed!
+---
 
-Deploy to production with Gunicorn and Nginx, or use Docker for containerization.
+Contributions, issues, and feature requests are welcome. Feel free to open an issue or submit a pull request.
 
-License
-MIT License © [Your Name or Company]
 
-For improvements or issues, open an issue or PR. Contributions welcome!
-=======
-# Multi_Disease_Detection_Model
-General_Purpose_Disease-Classification is a Flask-based multi-disease detection app that combines nine ML/CNN models on Kaggle datasets to analyze medical images and tabular data, providing unified predictions for multiple conditions via image upload and form/CSV/JSON inputs.
->>>>>>> 41ba26a9bc9bd9c5dd289e43f1987c49b7f48572
+
